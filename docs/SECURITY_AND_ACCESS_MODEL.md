@@ -198,6 +198,14 @@ Security-relevant actions must be attributable to an identity and request ID, in
 
 CloudWatch Logs should use structured JSON, redact tokens and secrets, and have separate retention settings for staging and production. CloudTrail records AWS API activity. Alarms should cover authorization-denial spikes, Lambda errors, throttling, queue depth, dead-letter messages, and unusual data access.
 
+## Notification security
+
+Amazon SNS is planned for v1 notification delivery. Topics must be separate for staging and production, and publishing must be limited to approved Lambda or EventBridge principals.
+
+Notification payloads should contain only the minimum information required by subscribers. Sensitive failure evidence, tokens, credentials, and unrestricted attachment URLs must not be published to SNS. Pre-signed S3 URLs, if ever included, must be short-lived and purpose-specific.
+
+Subscriptions must use approved endpoints and confirmation controls. Delivery failures, rejected subscriptions, and unauthorized publish attempts require CloudWatch monitoring and audit records.
+
 ## Environment isolation
 
 Staging and production must have separate:

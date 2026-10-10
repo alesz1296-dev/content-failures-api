@@ -14,6 +14,29 @@ Use two logical tables per environment:
 
 This keeps the transactional failure workflow separate from potentially high-volume automated test ingestion. Both tables remain independently scalable and independently retained.
 
+## Initial observation workload decision
+
+The initial automated test workload is expected to be low and predictable:
+
+- test programs run during scheduled night or weekend windows;
+- a content failure ends the affected test run;
+- observations are not continuously streamed;
+- failure observations are not expected to arrive in sustained high-volume bursts; and
+- test-run completion provides a natural operational boundary.
+
+For the initial implementation, observation ingestion may use a direct synchronous path:
+
+```text
+Test system
+  -> private API Gateway REST API
+  -> Lambda
+  -> content-failure-observations DynamoDB table
+```
+
+SQS buffering is not required for the first staging implementation. The design should still include throttling, idempotency, retry-safe writes, and alarms so that a future queue-backed ingestion path can be introduced without changing the observation schema.
+
+This decision should be revisited if test programs begin running continuously, multiple programs overlap, test systems retry aggressively, or a single run produces a large burst of observations.
+
 Do not create a table for every history type. A single-table pattern for the failure aggregate keeps related records queryable by failure and allows transactional writes for state changes plus history events.
 
 ## `content-failures` table
@@ -241,11 +264,11 @@ No application code should construct table names independently of Terraform outp
 
 ## Cost and scaling posture
 
-Begin with on-demand billing for staging and early production learning unless traffic is predictable enough to justify provisioned capacity. Review hot partitions before adding indexes. Automated observation ingestion may require a separate write path, batching, or queue buffering if test volume becomes high.
+Begin with on-demand billing for staging and early production learning unless traffic is predictable enough to justify provisioned capacity. Review hot partitions before adding indexes. The initial scheduled observation workload does not require queue buffering or streaming infrastructure. Keep the ingestion boundary replaceable so SQS buffering or batch ingestion can be added if the workload changes.
 
 ## Open decisions
 
-1. Are observations low-volume enough for one table per environment, or should ingestion use SQS before DynamoDB?
+1. When should the direct observation path be replaced with SQS buffering or batch ingestion?
 2. What is the required retention for observations and evidence?
 3. Are customer-managed KMS keys required in both environments?
 4. Which list filters must be strongly supported at launch?

@@ -53,7 +53,10 @@ The exact client connectivity pattern—VPN, Direct Connect, Transit Gateway, or
 - user authentication: OIDC through the approved enterprise identity provider;
 - application logging: CloudWatch Logs with structured records and environment-specific retention;
 - evidence storage: private, versioned S3 bucket using short-lived pre-signed upload URLs;
+- notifications: Amazon SNS topics for authorized content-failure notifications;
 - infrastructure and application delivery: a simple GitHub Actions workflow using GitHub OIDC and short-lived AWS role credentials.
+
+SNS is part of v1 for notification delivery. It is separate from test-observation ingestion: observations use the direct API-to-Lambda-to-DynamoDB path initially. Notification topics, subscriptions, filtering, and failure handling require environment-specific configuration.
 
 ### DynamoDB access constraint
 
