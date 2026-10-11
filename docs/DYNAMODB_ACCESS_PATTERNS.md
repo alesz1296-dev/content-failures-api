@@ -3,6 +3,8 @@
 Status: Proposed for review  
 Scope: staging and production
 
+Implementation checkpoint: the Terraform foundation is configured and staging variables are valid. DynamoDB resources have not yet been added.
+
 This document defines the preliminary DynamoDB design for the Content Failures API. It focuses on AWS implementation choices and Terraform boundaries. It does not authorize application or Terraform implementation.
 
 ## Design recommendation

@@ -56,17 +56,19 @@
 
   <rect x="355" y="685" width="900" height="178" class="async"/>
   <text x="375" y="717" class="group-title">Asynchronous processing and operations</text>
-  <image href="aws-icons/Arch_Amazon-EventBridge_64.svg" x="400" y="750" width="70" height="70"/>
-  <text x="435" y="842" class="small">EventBridge</text>
-  <image href="aws-icons/Arch_Amazon-Simple-Queue-Service_64.svg" x="580" y="750" width="70" height="70"/>
-  <text x="615" y="842" class="small">Amazon SQS + DLQ</text>
-  <image href="aws-icons/Arch_AWS-Lambda_64.svg" x="760" y="750" width="70" height="70"/>
-  <text x="795" y="842" class="small">Lambda workers</text>
-  <image href="aws-icons/Arch_Amazon-CloudWatch_64.svg" x="940" y="750" width="70" height="70"/>
-  <text x="975" y="842" class="small">CloudWatch</text>
-  <image href="aws-icons/Arch_AWS-CloudTrail_64.svg" x="1120" y="750" width="70" height="70"/>
-  <text x="1155" y="842" class="small">CloudTrail</text>
-  <path d="M470 785 H580 M650 785 H760 M830 785 H940 M1010 785 H1120" class="flow"/>
+  <image href="aws-icons/Arch_Amazon-EventBridge_64.svg" x="380" y="750" width="60" height="60"/>
+  <text x="410" y="842" class="small">EventBridge</text>
+  <image href="aws-icons/Arch_Amazon-Simple-Queue-Service_64.svg" x="520" y="750" width="60" height="60"/>
+  <text x="550" y="842" class="small">SQS + DLQ</text>
+  <image href="aws-icons/Arch_Amazon-Simple-Notification-Service_64.svg" x="660" y="750" width="60" height="60"/>
+  <text x="690" y="842" class="small">SNS</text>
+  <image href="aws-icons/Arch_AWS-Lambda_64.svg" x="800" y="750" width="60" height="60"/>
+  <text x="830" y="842" class="small">Lambda workers</text>
+  <image href="aws-icons/Arch_Amazon-CloudWatch_64.svg" x="950" y="750" width="60" height="60"/>
+  <text x="980" y="842" class="small">CloudWatch</text>
+  <image href="aws-icons/Arch_AWS-CloudTrail_64.svg" x="1100" y="750" width="60" height="60"/>
+  <text x="1130" y="842" class="small">CloudTrail</text>
+  <path d="M440 780 H520 M580 780 H660 M720 780 H800 M860 780 H950 M1010 780 H1100" class="flow"/>
   <path d="M978 644 V680 H435 V750" class="flow"/>
   <circle cx="530" cy="755" r="22" class="num"/><text x="530" y="755" class="num-text">5</text>
 
