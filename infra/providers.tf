@@ -1,3 +1,4 @@
+# Configure the AWS Provider
 provider "aws" {
   region = var.aws_region
 
@@ -5,7 +6,7 @@ provider "aws" {
     tags = {
       Project     = var.project_name
       Environment = var.environment
-      ManagedBy   = "Terraform"
+      ManagedBy   = var.managing_tool
     }
   }
 }

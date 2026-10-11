@@ -47,6 +47,31 @@ The initial access model should include:
 
 The exact client connectivity pattern—VPN, Direct Connect, Transit Gateway, or another corporate network path—must be documented before implementation.
 
+## Current exercise decisions
+
+- Scope: one business unit for the mock implementation; multi-tenant support is deferred.
+- Deployment accounts: staging and production use separate AWS accounts.
+- Identity provider: undecided. Candidate options are described below.
+- Severity: use a simple conventional severity set for the exercise; response-time targets are intentionally out of scope.
+- Lifecycle permissions: administrators may reassign ownership and change status at any time. No detailed role-by-transition matrix is required for this exercise.
+- Failure granularity: one content failure represents one event. Repeated occurrences are recorded as observations or related failures rather than grouped into one event.
+- Comments: editable and appendable. Edit history should remain auditable.
+- Attachments: support common image files, CSV files, and document files. Exact MIME allowlist and size limits remain to be set before implementation.
+- Retention: observations and evidence are retained for 90 days for this exercise.
+- Encryption: customer-managed KMS keys are required in both staging and production.
+- Notifications: email and Slack are required channels. SNS can deliver email directly; Slack requires an approved HTTPS subscriber or a Lambda/webhook adapter.
+- Sensitivity: the exercise assumes no special sensitive-data classification. Normal authentication and authorization still apply.
+- Recovery objectives: staging and production RPO/RTO targets are deferred.
+
+### Identity-provider options
+
+1. **Amazon Cognito User Pool with OIDC federation** — recommended for the AWS exercise when an enterprise provider is not available. Cognito provides the application-facing issuer and can federate an external OIDC provider later.
+2. **Direct enterprise OIDC through a custom Lambda authorizer** — appropriate when the organization already has an issuer and API Gateway must validate claims directly, but it adds authorizer code and claim-validation responsibility.
+3. **Managed identity provider such as Microsoft Entra ID, Okta, or Auth0 federated through Cognito** — appropriate when the company already uses one of these providers.
+4. **Keycloak or another self-hosted OIDC provider** — useful for local or controlled demonstrations, but adds operational responsibility and is not preferred for the AWS mock.
+
+For this exercise, use Cognito User Pool authentication first, with the design leaving room for OIDC federation. The choice can be replaced once the real enterprise identity provider is known.
+
 ## Confirmed platform choices
 
 - API protocol: private API Gateway REST API;

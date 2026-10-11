@@ -37,6 +37,26 @@ SQS buffering is not required for the first staging implementation. The design s
 
 This decision should be revisited if test programs begin running continuously, multiple programs overlap, test systems retry aggressively, or a single run produces a large burst of observations.
 
+## Confirmed exercise decisions
+
+- Observation retention: 90 days.
+- Evidence retention: 90 days, subject to the final deletion and legal-hold policy.
+- Customer-managed KMS keys: required in both staging and production.
+- Staging and production: separate AWS accounts.
+- DynamoDB Streams consumers: not selected yet; consumer, dead-letter, and replay requirements remain open.
+
+### Observation ingestion replacement trigger
+
+Replace the direct observation path with SQS buffering or batch ingestion when one or more of these conditions becomes true:
+
+- test programs overlap substantially;
+- peak writes begin causing throttling or elevated Lambda duration;
+- retries produce duplicate or concurrent writes that need queue control;
+- a test run produces a burst large enough to threaten API latency; or
+- an external test system requires durable acceptance before processing.
+
+The initial design does not require a numeric threshold. CloudWatch metrics should be used to establish a measured threshold after staging and early production-like testing.
+
 Do not create a table for every history type. A single-table pattern for the failure aggregate keeps related records queryable by failure and allows transactional writes for state changes plus history events.
 
 ## `content-failures` table
@@ -127,6 +147,17 @@ Supports:
 ### Category and severity queries
 
 Content categories and severity should initially be filter attributes within the supported team, content-type, or validation queries. Do not add separate indexes for every category or severity until observed access patterns justify them.
+
+### Content-category index options
+
+The available options are:
+
+1. **No dedicated index initially** — query through team/content-type work queues and filter categories in the application. Lowest cost and simplest design, but unsuitable for large category-specific queues.
+2. **Add category to an existing composite GSI** — for example, include category in a work-queue key when the real query is team plus category plus status. Efficient for a known query, but creates more key combinations.
+3. **Dedicated category GSI** — use a category/status partition for direct category queues. Faster category queries, but adds index storage and write cost.
+4. **Category projection or reporting table** — maintain a derived view for dashboards and analytics. Most flexible, but requires Streams or another projection process.
+
+Recommendation for v1: choose option 1 unless category-only queues are a launch requirement. Revisit after observing real query frequency and item distribution.
 
 ## `content-failure-observations` table
 
@@ -268,11 +299,8 @@ Begin with on-demand billing for staging and early production learning unless tr
 
 ## Open decisions
 
-1. When should the direct observation path be replaced with SQS buffering or batch ingestion?
-2. What is the required retention for observations and evidence?
-3. Are customer-managed KMS keys required in both environments?
-4. Which list filters must be strongly supported at launch?
-5. Should content categories receive a dedicated index after initial usage data?
-6. Which consumers require DynamoDB Streams, and what are their dead-letter and replay requirements?
-7. Are staging and production in separate AWS accounts?
+1. Which measured CloudWatch threshold should trigger replacement of direct observation ingestion?
+2. Which list filters must be strongly supported at launch?
+3. Should content categories receive a dedicated index after initial usage data?
+4. Which consumers require DynamoDB Streams, and what are their dead-letter and replay requirements?
 

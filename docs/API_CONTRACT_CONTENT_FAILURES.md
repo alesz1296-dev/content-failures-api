@@ -296,6 +296,22 @@ Supported filters:
 - `observed_from`
 - `observed_to`
 
+The launch filter options are:
+
+- `status`
+- `severity`
+- `owning_team`
+- `content_type`
+- `content_category`
+- `validation_status`
+- `service`
+- `technical_owner_user_id`
+- `first_observed_test_program_id`
+- `created_from` and `created_to`
+- `observed_from` and `observed_to`
+
+For v1, the strongest supported work-queue filters should be `status`, `owning_team`, `severity`, `content_type`, and `validation_status`. Category, owner, service, test-program, and date filters may begin as secondary filters until measured usage justifies additional DynamoDB indexes.
+
 `limit` defaults to `25` and must not exceed `100`. Results use a stable, documented sort order, such as `created_at` descending followed by `failure_id` descending.
 
 Response:
@@ -536,13 +552,26 @@ Error codes are stable identifiers for clients. Messages may change for clarity.
 
 ## Contract decisions still requiring confirmation
 
-1. Final severity values and their response-time policies.
+The current exercise decisions are:
+
+1. The service supports one business unit. Multi-tenant support is deferred.
+2. Use a simple conventional severity set for the exercise; response-time targets are out of scope.
+3. Administrators may reassign ownership and change status at any time. A detailed role-by-transition matrix is deferred.
+4. One content failure represents one event. Repeated occurrences are observations or related failures.
+5. Comments are editable and appendable; edit history must remain auditable.
+6. Attachments may include common images, CSV files, and document files. Exact MIME allowlist and size limits remain to be set before implementation.
+7. Notifications use email and Slack. SNS can deliver email directly; Slack requires an approved HTTPS subscriber or a Lambda/webhook adapter.
+8. No special sensitive-data classification is required for the exercise, but authenticated access still applies.
+9. Staging and production RPO/RTO targets are deferred.
+
+The following remain open:
+
+1. Final severity values.
 2. Whether `environment` is caller-supplied or derived from the deployment.
 3. Whether probability is calculated by this API or supplied by a test system.
 4. The authoritative registry and identifiers for test programs.
-5. Whether comments require edit or redaction support.
-6. Attachment limits, retention, and scanning requirements.
-7. Identity provider and final role names.
+5. Attachment size, retention, and malware-scanning limits.
+6. Identity provider choice and final role names.
 
 ## Preliminary supporting schemas
 
